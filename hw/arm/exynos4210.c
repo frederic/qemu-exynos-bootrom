@@ -98,13 +98,16 @@
 #define EXYNOS4210_EHCI_BASE_ADDR           0x12580000
 
 static uint8_t chipid_and_omr[] = { 0x11, 0x02, 0x21, 0x43,
-                                    0x09, 0x00, 0x00, 0x00 };
+                                    0x09, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x20, 0x00 };
 
 static uint64_t exynos4210_chipid_and_omr_read(void *opaque, hwaddr offset,
                                                unsigned size)
 {
-    assert(offset < sizeof(chipid_and_omr));
-    return chipid_and_omr[offset];
+	uint64_t ret;
+	assert(offset + size <= sizeof(chipid_and_omr));
+	memcpy(&ret, &chipid_and_omr[offset], size);
+	return ret;
 }
 
 static void exynos4210_chipid_and_omr_write(void *opaque, hwaddr offset,
@@ -118,7 +121,8 @@ static const MemoryRegionOps exynos4210_chipid_and_omr_ops = {
     .write = exynos4210_chipid_and_omr_write,
     .endianness = DEVICE_NATIVE_ENDIAN,
     .impl = {
-        .max_access_size = 1,
+		.min_access_size = 1,
+		.max_access_size = 4,
     }
 };
 
