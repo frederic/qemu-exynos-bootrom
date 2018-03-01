@@ -39,6 +39,9 @@
 
 #define EXYNOS4210_CHIPID_ADDR         0x10000000
 
+/* OTP */
+#define EXYNOS4210_OTP_BASE_ADDR		0x10100000
+
 /* PWM */
 #define EXYNOS4210_PWM_BASE_ADDR       0x139D0000
 
@@ -302,6 +305,8 @@ Exynos4210State *exynos4210_init(MemoryRegion *system_mem)
         NULL, "exynos4210.chipid", sizeof(chipid_and_omr));
     memory_region_add_subregion(system_mem, EXYNOS4210_CHIPID_ADDR,
                                 &s->chipid_mem);
+    /* OTP Memory (fuses) */
+	sysbus_create_simple("exynos4210.otp", EXYNOS4210_OTP_BASE_ADDR, NULL);
 
     /* Internal ROM */
     memory_region_init_ram(&s->irom_mem, NULL, "exynos4210.irom",
