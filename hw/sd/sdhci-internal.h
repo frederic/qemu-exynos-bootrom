@@ -107,6 +107,8 @@
 
 /* CLKCON */
 #define SDHC_CLKCON                    0x2C
+#define SDHC_CLOCK_EXT_STABLE          0x0008
+#define SDHC_CLOCK_CARD_EN             0x0004
 #define SDHC_CLOCK_INT_STABLE          0x0002
 #define SDHC_CLOCK_INT_EN              0x0001
 #define SDHC_CLOCK_SDCLK_EN            (1 << 2)

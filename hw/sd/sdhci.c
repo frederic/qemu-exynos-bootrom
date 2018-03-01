@@ -1067,6 +1067,12 @@ sdhci_write(void *opaque, hwaddr offset, uint64_t val, unsigned size)
         } else {
             s->clkcon &= ~SDHC_CLOCK_INT_STABLE;
         }
+
+        if (SDHC_CLOCK_CARD_EN & s->clkcon) {
+            s->clkcon |= SDHC_CLOCK_EXT_STABLE;
+        } else {
+            s->clkcon &= ~SDHC_CLOCK_EXT_STABLE;
+        }
         break;
     case SDHC_NORINTSTS:
         if (s->norintstsen & SDHC_NISEN_CARDINT) {
