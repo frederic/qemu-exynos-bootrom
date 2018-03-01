@@ -51,6 +51,9 @@
 /* MCT */
 #define EXYNOS4210_MCT_BASE_ADDR       0x10050000
 
+/* ACE */
+#define EXYNOS4210_ACE_BASE_ADDR       0x10830000
+
 /* I2C */
 #define EXYNOS4210_I2C_SHIFT           0x00010000
 #define EXYNOS4210_I2C_BASE_ADDR       0x13860000
@@ -337,6 +340,7 @@ Exynos4210State *exynos4210_init(MemoryRegion *system_mem)
 
     sysbus_create_simple("exynos4210.clk", EXYNOS4210_CLK_BASE_ADDR, NULL);
     sysbus_create_simple("exynos4210.rng", EXYNOS4210_RNG_BASE_ADDR, NULL);
+    sysbus_create_simple("exynos4210.ace", EXYNOS4210_ACE_BASE_ADDR, NULL);
 
     /* PWM */
     sysbus_create_varargs("exynos4210.pwm", EXYNOS4210_PWM_BASE_ADDR,
