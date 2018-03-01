@@ -1407,7 +1407,8 @@ static sd_rsp_type_t sd_app_command(SDState *sd,
             }
 
             return sd_r3;
-
+        case sd_ready_state:
+			return sd_r3;
         default:
             break;
         }
