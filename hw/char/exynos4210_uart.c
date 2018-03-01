@@ -34,7 +34,7 @@
 #undef DEBUG_Rx_DATA
 #undef DEBUG_Tx_DATA
 
-#define DEBUG_UART            0
+#define DEBUG_UART            1
 #define DEBUG_UART_EXTEND     0
 #define DEBUG_IRQ             0
 #define DEBUG_Rx_DATA         0
@@ -355,7 +355,7 @@ static void exynos4210_uart_write(void *opaque, hwaddr offset,
     Exynos4210UartState *s = (Exynos4210UartState *)opaque;
     uint8_t ch;
 
-    PRINT_DEBUG_EXTEND("UART%d: <0x%04x> %s <- 0x%08llx\n", s->channel,
+    PRINT_DEBUG_EXTEND("UART%d: <0x%04lx> %s <- 0x%08llx\n", s->channel,
         offset, exynos4210_uart_regname(offset), (long long unsigned int)val);
 
     switch (offset) {
@@ -400,7 +400,7 @@ static void exynos4210_uart_write(void *opaque, hwaddr offset,
     case UINTP:
         s->reg[I_(UINTP)] &= ~val;
         s->reg[I_(UINTSP)] &= ~val;
-        PRINT_DEBUG("UART%d: UINTP [%04x] have been cleared: %08x\n",
+        PRINT_DEBUG("UART%d: UINTP [%04lx] have been cleared: %08x\n",
                     s->channel, offset, s->reg[I_(UINTP)]);
         exynos4210_uart_update_irq(s);
         break;
@@ -409,7 +409,7 @@ static void exynos4210_uart_write(void *opaque, hwaddr offset,
     case UFSTAT:
     case UMSTAT:
     case URXH:
-        PRINT_DEBUG("UART%d: Trying to write into RO register: %s [%04x]\n",
+        PRINT_DEBUG("UART%d: Trying to write into RO register: %s [%04lx]\n",
                     s->channel, exynos4210_uart_regname(offset), offset);
         break;
     case UINTSP:
@@ -467,7 +467,7 @@ static uint64_t exynos4210_uart_read(void *opaque, hwaddr offset,
         }
         return res;
     case UTXH:
-        PRINT_DEBUG("UART%d: Trying to read from WO register: %s [%04x]\n",
+        PRINT_DEBUG("UART%d: Trying to read from WO register: %s [%04lx]\n",
                     s->channel, exynos4210_uart_regname(offset), offset);
         break;
     default:
