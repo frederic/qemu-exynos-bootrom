@@ -21,6 +21,34 @@
 #include "hw/sysbus.h"
 #include "qemu/log.h"
 
+#ifndef DEBUG_CLK
+#define DEBUG_CLK           0
+#endif
+
+#ifndef DEBUG_CLK_EXTEND
+#define DEBUG_CLK_EXTEND    0
+#endif
+
+#if DEBUG_CLK
+#define  PRINT_DEBUG(fmt, args...)  \
+        do { \
+            fprintf(stderr, "  [%s:%d]   "fmt, __func__, __LINE__, ##args); \
+        } while (0)
+
+#if DEBUG_CLK_EXTEND
+#define  PRINT_DEBUG_EXTEND(fmt, args...) \
+        do { \
+            fprintf(stderr, "  [%s:%d]   "fmt, __func__, __LINE__, ##args); \
+        } while (0)
+#else
+#define  PRINT_DEBUG_EXTEND(fmt, args...)  do {} while (0)
+#endif /* EXTEND */
+
+#else
+#define  PRINT_DEBUG(fmt, args...)   do {} while (0)
+#define  PRINT_DEBUG_EXTEND(fmt, args...)  do {} while (0)
+#endif
+
 #define TYPE_EXYNOS4210_CLK             "exynos4210.clk"
 #define EXYNOS4210_CLK(obj) \
     OBJECT_CHECK(Exynos4210ClkState, (obj), TYPE_EXYNOS4210_CLK)
@@ -43,6 +71,7 @@ static const Exynos4210Reg exynos4210_clk_regs[] = {
     {"EPLL_CON1",                     0xc114, 0x00000000},
     {"VPLL_CON0",                     0xc120, 0x00240201 | CLK_PLL_LOCKED},
     {"VPLL_CON1",                     0xc124, 0x66010464},
+    {"CLK_MUX_STAT_DMC",             0x10400, 0x21101111},
     {"APLL_LOCK",                    0x14000, 0x00000fff},
     {"MPLL_LOCK",                    0x14004, 0x00000fff},
     {"APLL_CON0",                    0x14100, 0x00c80601 | CLK_PLL_LOCKED},
@@ -87,6 +116,13 @@ static void exynos4210_clk_write(void *opaque, hwaddr offset,
 
     for (i = 0; i < EXYNOS4210_REGS_NUM; i++) {
         if (regs->offset == offset) {
+            PRINT_DEBUG_EXTEND("%s <0x%04x> <- 0x%04x\n", regs->name,
+                    (uint32_t)offset, (uint32_t)val);
+            if (offset == 0xc110){//EPLL_CON0
+				val |= CLK_PLL_LOCKED;// lock automatically
+            PRINT_DEBUG_EXTEND("%s <0x%04x> <- 0x%04x (modified)\n", regs->name,
+                    (uint32_t)offset, (uint32_t)val);
+			}
             s->reg[i] = val;
             return;
         }
